@@ -15,7 +15,7 @@ env:
 
 jobs:
   release:
-    name: 📦 Release
+    name: 📦 Release & 🚀 Publish
     runs-on: ubuntu-latest
     steps:
       - name: ⛙ Checkout branch ${{ github.ref }}
@@ -49,20 +49,6 @@ jobs:
 
           # push changes
           git push origin --follow-tags
-
-  publish:
-    name: 🚀 Publish
-    needs: release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 🏗️ Setup
-        uses: ./.github/actions/setup
-        with:
-          node_version: ${{ env.node_version }}
-          pnpm_version: ${{ env.node_version }}
-          fetch-depth: 0
-          ref: main
 
       - name: 🚧 Build
         run: |
