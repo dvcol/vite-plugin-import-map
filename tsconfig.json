@@ -1,0 +1,21 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts", "node_modules"],
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "node",
+    "declarationMap": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "outDir": "dist",
+    "composite": false
+  }
+}

@@ -1,0 +1,29 @@
+# compilation folders
+dist*
+dist-e2e
+dist-backendless
+dist-devtool
+build
+www
+loader
+storybook-static
+public
+
+# test reports
+coverage
+allure-results
+logs
+logs_wdio
+screenshots
+
+# lint reports
+lint
+
+# security reports
+snyk
+
+# compilations
+node_modules
+
+# config/temporary folders
+.*

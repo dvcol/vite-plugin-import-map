@@ -1,0 +1,95 @@
+name: Release - Tag, Release and Publish
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    tagName:
+      description: Tag name
+      required: false
+
+env:
+  node_version: 18.x
+  pnpm_version: 7.x
+
+jobs:
+  release:
+    name: 📦 Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗️ Setup
+        uses: ./.github/actions/setup
+        with:
+          node_version: ${{ env.node_version }}
+          pnpm_version: ${{ env.node_version }}
+          fetch-depth: 0
+          ref: main
+
+      - name: 📦 Release
+        run: |
+          # ================ 📦 Release ================
+          
+          # setup git credentials
+          git config user.name "GitHub Release Bot"
+          git config user.email "<>"
+
+          # generate release
+          pnpm run release
+
+      - name: ⛙ Push to remote
+        run: |
+          # ================ ⛙ Push to remote ================
+          # Check status
+          git status
+          git diff --color -U0 | cat
+
+          # push changes
+          git push origin --follow-tags
+
+  publish:
+    name: 🚀 Publish
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🏗️ Setup
+        uses: ./.github/actions/setup
+        with:
+          node_version: ${{ env.node_version }}
+          pnpm_version: ${{ env.node_version }}
+          fetch-depth: 0
+          ref: main
+
+      - name: 🚧 Build
+        run: |
+          # ================ 🚧 Build ================
+          pnpm run build
+
+      - name:  🚀 Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # ================ 🚀 Publish ================
+          pnpm publish
+
+      - name: 📋️ Generate Release changelog
+        run: |
+          # ================ 📋 Changelog ================
+          pnpm run release:changelog
+
+      - name:  🏗️ Fetch latest tag
+        if: ${{ github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.tagName == '') }}
+        id: latest-tag
+        run: |
+          # ================ 🏗️ Fetch tag ================
+          tag_name=$(git describe --abbrev=0)
+          echo "Tag found: '$tag_name'"
+          echo "::set-output name=TAG_NAME::$tag_name"
+
+      - name: 🚀 Push Release to github
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tagName || steps.latest-tag.outputs.TAG_NAME || github.ref}}
+          body_path: RELEASE.md
