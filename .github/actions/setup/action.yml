@@ -1,12 +1,7 @@
 name: 🏗️ Setup
-description: Setup sources, pnpm, node and dependencies
+description: Setup pnpm, node and dependencies
 
 inputs:
-  ref:
-    description: "Optional checkout ref"
-  fetch-depth:
-    description: "Optional checkout depth"
-
   pnpm_version:
     description: "Pnpm version to setup (will infer from package.json if blank)"
   node_version:
@@ -15,12 +10,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: ⛙ Checkout branch ${{ github.ref }}
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ inputs.ref }}
-        fetch-depth: ${{ inputs.fetch-depth }}
-
     - name: 🏗️ Setup pnpm ${{ inputs.pnpm_version }}
       uses: pnpm/action-setup@v2
       with:
@@ -38,4 +27,3 @@ runs:
       run: |
         # ================ 🧱 install ================
         pnpm install
-·

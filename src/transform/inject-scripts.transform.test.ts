@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { Link, Script, ScriptOrLink } from '../models/inject-script.models';
-
 import { createScriptTag, injectScriptTags, mergeScripts } from './inject-scripts.transform';
+
+import type { Link, Script, ScriptOrLink } from '../models/inject-script.models';
 
 describe('inject-scripts.transform.ts', () => {
   // Sample scriptOrLink object
@@ -104,16 +104,16 @@ describe('inject-scripts.transform.ts', () => {
       // Assertions
       expect(mergedScripts).toHaveLength(3);
 
-      const mergedGroup1 = mergedScripts.find(script => script.group === 'group1');
+      const mergedGroup1 = mergedScripts.find(_script => _script.group === 'group1');
       expect(mergedGroup1).toBeDefined();
       expect(mergedGroup1?.text).toContain('import "script1.js"');
       expect(mergedGroup1?.text).toContain('import "script2.js"');
 
-      const mergedGroup2 = mergedScripts.find(script => script.group === 'group2');
+      const mergedGroup2 = mergedScripts.find(_script => _script.group === 'group2');
       expect(mergedGroup2).toBeDefined();
       expect(mergedGroup2?.text).toContain('import "script3.js"');
 
-      const ungroupedScript = mergedScripts.find(script => !script.group);
+      const ungroupedScript = mergedScripts.find(_script => !_script.group);
       expect(ungroupedScript).toBeDefined();
       expect(ungroupedScript?.src).toBe('script4.js');
     });
@@ -131,10 +131,10 @@ describe('inject-scripts.transform.ts', () => {
     // Assertions
     expect(mergedScripts).toHaveLength(3);
 
-    mergedScripts.forEach(script => {
-      expect(script.group).toBeUndefined();
-      expect(script.src).toBeDefined();
-      expect(script.text).toBeUndefined();
+    mergedScripts.forEach(_script => {
+      expect(_script.group).toBeUndefined();
+      expect(_script.src).toBeDefined();
+      expect(_script.text).toBeUndefined();
     });
   });
 

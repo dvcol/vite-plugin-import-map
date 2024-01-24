@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { VersionHook } from '../models/import-map.models';
-
 import { generateImportMap, generateImportMapInferVersion, mergeMaps } from './generate-import-map.utils';
+
+import type { VersionHook } from '../models/import-map.models';
 
 describe('generate-import-map.utils.ts', () => {
   describe('mergeMaps', () => {

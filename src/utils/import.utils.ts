@@ -3,9 +3,14 @@ import { resolve } from 'node:path';
 
 import chalk from 'chalk';
 
-import { GlobbyOptions, sync as globbySync } from 'globby';
+import { sync as globbySync } from 'globby';
 
-import { Import, Imports, Infer, NamedImport, PackageJson } from '../models/import-map.models';
+import { Infer } from '../models/import-map.models';
+
+import type { PackageJson } from '../models/common.models';
+
+import type { Import, Imports, NamedImport } from '../models/import-map.models';
+import type { GlobbyOptions } from 'globby';
 
 /**
  * Convert a string or Import object into an Import
@@ -61,9 +66,7 @@ export const computeUrl = (
   if (!version) throw new Error(`[import-map-plugin]: No version could be resolved for '${name}'`);
   if (!domain) throw new Error(`[import-map-plugin]: No domain could be resolved for '${name}'`);
 
-  return new URL(
-    [domain, `${base ?? name}${separator ?? defaultSeparator}${version}`, index].filter(Boolean).join('/'),
-  ).toString();
+  return new URL([domain, `${base ?? name}${separator ?? defaultSeparator}${version}`, index].filter(Boolean).join('/')).toString();
 };
 
 type Workspace = Record<string, { name: string; version: string; path: string }>;
@@ -143,5 +146,4 @@ const segmentRegex = /[^/]+/g;
  * const rootPath = getRootPath(pkgJson);
  * // Result: 'path/to/root'
  */
-export const geRootPath = (pkg?: PackageJson): string | undefined =>
-  pkg?.repository?.directory?.replace(segmentRegex, '..');
+export const geRootPath = (pkg?: PackageJson): string | undefined => pkg?.repository?.directory?.replace(segmentRegex, '..');

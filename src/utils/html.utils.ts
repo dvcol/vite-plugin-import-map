@@ -71,7 +71,6 @@ export function findFirstModuleScriptInHead(htmlString: string): number | undefi
   if (scriptIndex > -1) return headStartIndex + scriptIndex;
   const headCloseIndex = head.indexOf('</head>');
   if (headCloseIndex > -1) return headStartIndex + headCloseIndex;
-  return;
 }
 
 const importMapRegex = /(?<!<!--\s*)<script[^>]*type=['"`]?importmap['"`]?[^>]*>([\s\S]*?)<\/script>(?!\s*-->)/gi;
@@ -88,9 +87,7 @@ const importMapRegex = /(?<!<!--\s*)<script[^>]*type=['"`]?importmap['"`]?[^>]*>
 export function extractMap(html: string): { rawMap?: string; parsedMap: ImportMap } {
   const groups = Array.from(html.matchAll(importMapRegex));
   if (groups.length > 1) {
-    throw new Error(
-      '[import-map-plugin]: Invalid import map detected. An index file can only have one import map script.',
-    );
+    throw new Error('[import-map-plugin]: Invalid import map detected. An index file can only have one import map script.');
   }
   let rawMap;
   let parsedMap = { imports: {} };

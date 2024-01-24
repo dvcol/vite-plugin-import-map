@@ -1,12 +1,13 @@
-import { rollupPluginHTML, RollupPluginHtml, RollupPluginHTMLOptions } from '@web/rollup-plugin-html';
-
-import { TransformHtmlFunction } from '@web/rollup-plugin-html/src/RollupPluginHTMLOptions';
+import { rollupPluginHTML } from '@web/rollup-plugin-html';
 
 import { injectImportMap } from '../transform/inject-import-map.transform';
 
 import { injectScriptTags } from '../transform/inject-scripts.transform';
 
-import type { ImportMapRollupPluginOptions } from '../models/import-map.models';
+import type { ImportMapRollupPluginOptions } from '../models/common.models';
+
+import type { RollupPluginHtml, RollupPluginHTMLOptions } from '@web/rollup-plugin-html';
+import type { TransformHtmlFunction } from '@web/rollup-plugin-html/src/RollupPluginHTMLOptions';
 
 /**
  * Injects import map into an index.html with the help of the RollupPluginHTML.
@@ -51,8 +52,7 @@ export function importMapRollupPlugin(
   }: ImportMapRollupPluginOptions,
   htmlOptions: RollupPluginHTMLOptions = {},
 ): RollupPluginHtml {
-  const { map: mapDomain, scripts: scriptsDomain } =
-    domain && typeof domain !== 'string' ? domain : { map: domain, scripts: domain };
+  const { map: mapDomain, scripts: scriptsDomain } = domain && typeof domain !== 'string' ? domain : { map: domain, scripts: domain };
 
   const transformHtml: TransformHtmlFunction[] = [];
 
@@ -89,9 +89,7 @@ export function importMapRollupPlugin(
   }
 
   if (htmlOptions.transformHtml) {
-    transformHtml.push(
-      ...(Array.isArray(htmlOptions.transformHtml) ? htmlOptions.transformHtml : [htmlOptions.transformHtml]),
-    );
+    transformHtml.push(...(Array.isArray(htmlOptions.transformHtml) ? htmlOptions.transformHtml : [htmlOptions.transformHtml]));
   }
 
   return rollupPluginHTML({

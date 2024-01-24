@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { Link, Script, ScriptLoadError } from '../models/inject-script.models';
+import { ScriptLoadError } from '../models/inject-script.models';
 
 import { createElement, injectScript } from './inject-script.utils';
+
+import type { Link, Script } from '../models/inject-script.models';
 
 /**
  * @vitest-environment jsdom

@@ -1,4 +1,4 @@
-import { InjectScriptsOptions, ScriptOrLink } from './inject-script.models';
+import type { PackageJson } from './common.models';
 
 export const Infer = 'infer' as const;
 
@@ -13,19 +13,6 @@ export type Import = {
 };
 export type Imports = Record<string, string | Import>;
 export type ImportMap = { imports: Record<string, string>; scopes?: Record<string, Record<string, string>> };
-export type PackageJson = Record<string, unknown> & {
-  repository?: {
-    type?: string;
-    url?: string;
-    directory?: string;
-  };
-  dependencies?: Record<string, string>;
-  runtimeDependencies?: {
-    map?: Partial<ImportMap>;
-    imports?: Imports;
-    scripts?: ScriptOrLink[];
-  };
-};
 
 export type NamedImport = Import & {
   name?: string;
@@ -33,10 +20,7 @@ export type NamedImport = Import & {
 
 export const importAttributes: (keyof NamedImport)[] = ['name', 'version', 'separator', 'index', 'domain', 'src'];
 
-export type ImportMapTransformHook = (
-  map: ImportMap,
-  context?: { pkg?: PackageJson; debug?: boolean; strict?: boolean },
-) => ImportMap;
+export type ImportMapTransformHook = (map: ImportMap, context?: { pkg?: PackageJson; debug?: boolean; strict?: boolean }) => ImportMap;
 export type HtmlTransformHook = (html: string) => string;
 
 export type InjectImportMapOptions = {
@@ -63,19 +47,6 @@ export type InjectImportMapOptions = {
   /** Enable caching of workspace versions. */
   cache?: boolean;
 };
-
-export type ImportMapVitePluginOptions = Omit<InjectImportMapOptions & InjectScriptsOptions, 'domain'> & {
-  domain?:
-    | string
-    | {
-        /** The domain to prepend to import paths. */
-        map: string;
-        /** The domain to prepend to scripts paths. */
-        scripts: string;
-      };
-};
-
-export type ImportMapRollupPluginOptions = ImportMapVitePluginOptions & { input: string };
 
 export type VersionOptions = {
   version?: string;

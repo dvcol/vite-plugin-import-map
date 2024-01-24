@@ -30,9 +30,7 @@ describe('inject-import-map.transform.ts', () => {
     it('should validates a valid import map and not throw errors', () => {
       expect.assertions(2);
       // Validate a valid import map
-      expect(() =>
-        validateImportMap(validImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform }),
-      ).not.toThrow();
+      expect(() => validateImportMap(validImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform })).not.toThrow();
       expect(mockTransform).toHaveBeenCalledOnce();
     });
 
@@ -55,9 +53,7 @@ describe('inject-import-map.transform.ts', () => {
       expect.assertions(2);
 
       // Validate a valid import map
-      expect(() =>
-        validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: false, transform: mockTransform }),
-      ).not.toThrow();
+      expect(() => validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: false, transform: mockTransform })).not.toThrow();
       expect(mockTransform).toHaveBeenCalledOnce();
     });
 
@@ -65,9 +61,7 @@ describe('inject-import-map.transform.ts', () => {
       expect.assertions(1);
 
       // Validate an invalid import map in strict mode
-      expect(() =>
-        validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform }),
-      ).toThrow(
+      expect(() => validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform })).toThrow(
         "[import-map-plugin]: Local '1.0.0' and import map '1.1.0' versions do not match for package 'dependency1'.",
       );
     });

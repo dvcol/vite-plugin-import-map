@@ -5,13 +5,9 @@ import { extractMap, findFirstModuleScriptInHead, insertTextAtIndex, prettifyHtm
 import { extractAbsoluteVersion } from '../utils/regex.utils';
 import { writeFileJson } from '../utils/write-json.utils';
 
-import type {
-  HtmlTransformHook,
-  ImportMap,
-  ImportMapTransformHook,
-  InjectImportMapOptions,
-  PackageJson,
-} from '../models/import-map.models';
+import type { PackageJson } from '../models/common.models';
+
+import type { HtmlTransformHook, ImportMap, ImportMapTransformHook, InjectImportMapOptions } from '../models/import-map.models';
 
 /**
  * Validate generated import map against local dependencies. If a dependency is present in the package.json but differ from the import map version, an error is raised.
@@ -23,12 +19,7 @@ import type {
  */
 export const validateImportMap = (
   map: ImportMap,
-  {
-    pkg,
-    strict,
-    debug,
-    transform,
-  }: { pkg?: PackageJson; debug?: boolean; strict?: boolean; transform?: ImportMapTransformHook },
+  { pkg, strict, debug, transform }: { pkg?: PackageJson; debug?: boolean; strict?: boolean; transform?: ImportMapTransformHook },
 ) => {
   Object.entries(map.imports).forEach(([name, url]) => {
     let pkgVersion = pkg?.dependencies?.[name];

@@ -1,7 +1,9 @@
-import { Abortable } from 'node:events';
-import { Mode, ObjectEncodingOptions, OpenMode } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+
 import { dirname } from 'node:path';
+
+import type { Abortable } from 'node:events';
+import type { Mode, ObjectEncodingOptions, OpenMode } from 'node:fs';
 
 type WriteJsonOptions = ObjectEncodingOptions &
   Abortable & {

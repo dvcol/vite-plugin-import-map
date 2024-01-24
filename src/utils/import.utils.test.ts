@@ -73,11 +73,7 @@ describe('import.utils.ts', () => {
     it('should merges all simple elements from the right import into the left import', () => {
       expect.assertions(1);
 
-      const result = mergeImports(
-        { a: { version: '1.0.0' } },
-        { b: { version: '2.0.0' } },
-        { c: { version: '3.0.0' } },
-      );
+      const result = mergeImports({ a: { version: '1.0.0' } }, { b: { version: '2.0.0' } }, { c: { version: '3.0.0' } });
 
       expect(result).toStrictEqual({ a: { version: '1.0.0' }, b: { version: '2.0.0' }, c: { version: '3.0.0' } });
     });

@@ -1,18 +1,12 @@
 import chalk from 'chalk';
 
-import {
-  InjectScriptsOptions,
-  isLinkTypeGuard,
-  isScriptOrLinkAttributeTypeGuard,
-  Script,
-  ScriptAttributes,
-  ScriptOrLink,
-} from '../models/inject-script.models';
+import { isLinkTypeGuard, isScriptOrLinkAttributeTypeGuard } from '../models/inject-script.models';
 
 import { insertTextAtIndex, prettifyHtml } from '../utils/html.utils';
 import { computeUrl } from '../utils/import.utils';
 
 import type { HtmlTransformHook } from '../models/import-map.models';
+import type { InjectScriptsOptions, Script, ScriptAttributes, ScriptOrLink } from '../models/inject-script.models';
 
 /**
  * Creates an HTML script or link tag based on the provided script or link object and additional options.
@@ -85,7 +79,7 @@ export const mergeScripts = (scripts: ScriptOrLink[]): ScriptOrLink[] => {
   });
 
   map.forEach(values => {
-    let mergeGroup: Script | undefined = undefined;
+    let mergeGroup: Script | undefined;
     values.forEach((_script, index) => {
       if (index === 0) {
         mergeGroup = { ..._script, text: `import "${computeUrl(_script, '/')}"` };
@@ -124,7 +118,7 @@ export function injectScriptTags({
   scripts = [],
   domain,
   pkg,
-  transformScripts = scripts => scripts,
+  transformScripts = _script => _script,
   debug = false,
   prettier = true,
 }: InjectScriptsOptions): HtmlTransformHook {
@@ -151,7 +145,8 @@ export function injectScriptTags({
     if (!scriptTags?.length) {
       if (debug) console.warn('[import-map-plugin]:', chalk.yellow('No script tags generated'), scriptTags);
       return html;
-    } else if (debug) console.info('[import-map-plugin]:', chalk.blue('Injecting scripts'), scriptTags);
+    }
+    if (debug) console.info('[import-map-plugin]:', chalk.blue('Injecting scripts'), scriptTags);
 
     const index = html.indexOf('</head>');
     if (debug) console.info('[import-map-plugin]:', chalk.blue('Injecting scripts at index'), index);

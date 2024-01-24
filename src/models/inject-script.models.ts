@@ -1,16 +1,10 @@
-import { importAttributes, NamedImport, PackageJson } from './import-map.models';
+import { importAttributes } from './import-map.models';
 
-export type ScriptAttributes =
-  | 'id'
-  | 'type'
-  | 'defer'
-  | 'referrerPolicy'
-  | 'async'
-  | 'crossOrigin'
-  | 'integrity'
-  | 'noModule'
-  | 'nonce'
-  | 'text';
+import type { PackageJson } from './common.models';
+
+import type { NamedImport } from './import-map.models';
+
+export type ScriptAttributes = 'id' | 'type' | 'defer' | 'referrerPolicy' | 'async' | 'crossOrigin' | 'integrity' | 'noModule' | 'nonce' | 'text';
 
 export type LinkAttribute =
   | 'id'
@@ -34,9 +28,7 @@ export type Script = BaseScriptOrLink & Pick<Partial<HTMLScriptElement>, ScriptA
 export type Link = BaseScriptOrLink & Pick<Partial<HTMLLinkElement>, LinkAttribute> & Pick<HTMLLinkElement, 'rel'>;
 export type ScriptOrLink = Script | Link;
 
-export const isScriptOrLinkAttributeTypeGuard = <
-  T extends LinkAttribute | ScriptAttributes = LinkAttribute | ScriptAttributes,
->(
+export const isScriptOrLinkAttributeTypeGuard = <T extends LinkAttribute | ScriptAttributes = LinkAttribute | ScriptAttributes>(
   key: string,
 ): key is T => ![...importAttributes, 'group'].includes(key);
 
@@ -51,10 +43,7 @@ export class ScriptLoadError extends Error {
   }
 }
 
-export type InjectScriptTransformHook = (
-  scripts: ScriptOrLink[],
-  context?: { pkg?: PackageJson; debug?: boolean },
-) => ScriptOrLink[];
+export type InjectScriptTransformHook = (scripts: ScriptOrLink[], context?: { pkg?: PackageJson; debug?: boolean }) => ScriptOrLink[];
 
 export type InjectScriptsOptions = {
   /** An id to attached to the import map. This is only  added if a new script is injected. Defaults to 'import-map-plugin' */

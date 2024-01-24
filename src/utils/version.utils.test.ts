@@ -51,14 +51,14 @@ describe('version.utils.ts', () => {
     it('should return version from dependencies if it exists and version is undefined', () => {
       expect.assertions(1);
 
-      const name = mockWorkspace.moduleTwo.name;
+      const { name } = mockWorkspace.moduleTwo;
 
       expect(parseVersion(name, { pkg })).toBe('2.0.0');
     });
 
     it('should return version from dependencies if it exists and is set to workspace(:+)', () => {
       expect.assertions(2);
-      const name = mockWorkspace.moduleTwo.name;
+      const { name } = mockWorkspace.moduleTwo;
 
       const _pkg = {
         ...pkg,

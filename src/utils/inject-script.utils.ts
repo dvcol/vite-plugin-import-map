@@ -1,15 +1,10 @@
-import {
-  isLinkTypeGuard,
-  isScriptOrLinkAttributeTypeGuard,
-  ScriptAttributes,
-  ScriptLoadError,
-  ScriptOrLink,
-} from '../models/inject-script.models';
+import { isLinkTypeGuard, isScriptOrLinkAttributeTypeGuard, ScriptLoadError } from '../models/inject-script.models';
 
 import { computeUrl } from './import.utils';
 
-const isHtmlLink = (element: HTMLLinkElement | HTMLScriptElement): element is HTMLLinkElement =>
-  'rel' in element || 'href' in element;
+import type { ScriptAttributes, ScriptOrLink } from '../models/inject-script.models';
+
+const isHtmlLink = (element: HTMLLinkElement | HTMLScriptElement): element is HTMLLinkElement => 'rel' in element || 'href' in element;
 
 export const createElement = (scriptOrLink: ScriptOrLink) => {
   const element = document.createElement(isLinkTypeGuard(scriptOrLink) ? 'link' : 'script');
@@ -26,10 +21,10 @@ export const createElement = (scriptOrLink: ScriptOrLink) => {
 
   let path: string | undefined;
   if (isHtmlLink(element)) {
-    !element.href && (element.href = computeUrl(scriptOrLink));
+    if (!element.href) element.href = computeUrl(scriptOrLink);
     path = element.href;
   } else if (!isLinkTypeGuard(scriptOrLink) && !scriptOrLink.group) {
-    !element.src && (element.src = computeUrl(scriptOrLink));
+    if (!element.src) element.src = computeUrl(scriptOrLink);
     path = element.src;
   }
 

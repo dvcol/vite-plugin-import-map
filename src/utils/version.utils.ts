@@ -1,9 +1,11 @@
 import chalk from 'chalk';
 
-import { PackageJson, VersionHook, VersionOptions } from '../models/import-map.models';
-
 import { geRootPath, getWorkspace } from './import.utils';
 import { extractAbsoluteVersion, workspaceRegex } from './regex.utils';
+
+import type { PackageJson } from '../models/common.models';
+
+import type { VersionHook, VersionOptions } from '../models/import-map.models';
 
 /**
  * Parse the version of a dependency from the workspace configurations.
@@ -21,18 +23,14 @@ import { extractAbsoluteVersion, workspaceRegex } from './regex.utils';
  * // Some package.json in the workspace with name example-package and version 1.1.0
  * // Result: '1.1.0'
  */
-const parseWorkspaceVersion = (
-  name: string,
-  { pkg, debug, cache }: { pkg?: PackageJson; debug?: boolean; cache?: boolean },
-): string | undefined => {
+const parseWorkspaceVersion = (name: string, { pkg, debug, cache }: { pkg?: PackageJson; debug?: boolean; cache?: boolean }): string | undefined => {
   // resolve workspace version if repository.directory is set in package.json
   const workspace = getWorkspace({ cwd: geRootPath(pkg), debug, cache });
   const workspaceVersion = workspace[name]?.version;
   if (workspaceVersion) return extractAbsoluteVersion(workspaceVersion) ?? workspaceVersion;
-  else {
-    console.warn('[import-map-plugin]:', chalk.yellow('No workspace version found'), { name });
-    if (debug) console.warn('[import-map-plugin]:', chalk.yellow('Generated workspace'), workspace);
-  }
+
+  console.warn('[import-map-plugin]:', chalk.yellow('No workspace version found'), { name });
+  if (debug) console.warn('[import-map-plugin]:', chalk.yellow('Generated workspace'), workspace);
 };
 
 /**
@@ -52,10 +50,7 @@ const parseWorkspaceVersion = (
  * const parsedVersion = parseVersion('example-package', { pkg: pkgJson, debug: true });
  * // Result: '1.0.0'
  */
-export const parseVersion: VersionHook = (
-  name: string,
-  { version, pkg, debug, cache }: VersionOptions,
-): string | undefined => {
+export const parseVersion: VersionHook = (name: string, { version, pkg, debug, cache }: VersionOptions): string | undefined => {
   if (version && workspaceRegex.test(version)) return parseWorkspaceVersion(name, { pkg, debug, cache }) ?? version;
   if (version) return version;
   const _version = pkg?.dependencies?.[name];

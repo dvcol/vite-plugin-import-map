@@ -37,13 +37,9 @@ describe('html.utils.ts', () => {
 
       expect(() => insertTextAtIndex(html, insertionText, -10)).toThrow('[import-map-plugin]: Index out of range.');
 
-      expect(() => insertTextAtIndex(html, insertionText, html.length + 30)).toThrow(
-        '[import-map-plugin]: Index out of range.',
-      );
+      expect(() => insertTextAtIndex(html, insertionText, html.length + 30)).toThrow('[import-map-plugin]: Index out of range.');
 
-      expect(() => insertTextAtIndex(html, insertionText, undefined)).toThrow(
-        '[import-map-plugin]: Index out of range.',
-      );
+      expect(() => insertTextAtIndex(html, insertionText, undefined)).toThrow('[import-map-plugin]: Index out of range.');
     });
   });
 

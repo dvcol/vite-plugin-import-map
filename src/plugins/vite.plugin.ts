@@ -1,8 +1,9 @@
-import { Plugin } from 'vite';
-
-import { ImportMapVitePluginOptions } from '../models/import-map.models';
 import { injectImportMap } from '../transform/inject-import-map.transform';
 import { injectScriptTags } from '../transform/inject-scripts.transform';
+
+import type { ImportMapVitePluginOptions } from '../models/common.models';
+
+import type { Plugin } from 'vite';
 
 /**
  * Injects import map into an index.html with the help of the RollupPluginHTML.
@@ -28,25 +29,10 @@ import { injectScriptTags } from '../transform/inject-scripts.transform';
  * @return {Plugin} - A configured plugin instance.
  */
 export function importMapVitePlugin(
-  {
-    id,
-    imports,
-    map,
-    transformMap,
-    scripts,
-    transformScripts,
-    domain,
-    pkg,
-    debug,
-    strict,
-    prettier,
-    write,
-    cache,
-  }: ImportMapVitePluginOptions,
+  { id, imports, map, transformMap, scripts, transformScripts, domain, pkg, debug, strict, prettier, write, cache }: ImportMapVitePluginOptions,
   plugin: Partial<Plugin> = {},
 ): Plugin {
-  const { map: mapDomain, scripts: scriptsDomain } =
-    domain && typeof domain !== 'string' ? domain : { map: domain, scripts: domain };
+  const { map: mapDomain, scripts: scriptsDomain } = domain && typeof domain !== 'string' ? domain : { map: domain, scripts: domain };
   return {
     ...plugin,
     name: 'import-map-vite-plugin',

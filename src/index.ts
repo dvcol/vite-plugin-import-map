@@ -4,6 +4,7 @@ export * from './utils/import.utils';
 export * from './utils/generate-import-map.utils';
 export * from './utils/inject-script.utils';
 
+export * from './models/common.models';
 export * from './models/import-map.models';
 export * from './models/inject-script.models';
 

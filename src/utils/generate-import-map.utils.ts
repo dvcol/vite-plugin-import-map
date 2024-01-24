@@ -1,7 +1,7 @@
-import { GenerateImportMapOptions, ImportMap, Imports } from '../models/import-map.models';
-
 import { computeUrl, toImport } from './import.utils';
 import { parseVersion } from './version.utils';
+
+import type { GenerateImportMapOptions, ImportMap, Imports } from '../models/import-map.models';
 
 /**
  * Merge one or more import map into the left parameter.
@@ -77,8 +77,5 @@ export function generateImportMap(
  *
  * @returns {{ imports: ({ [key:string]: string } | {}) }} The generated import map, combining the original map with the new imports.
  */
-export const generateImportMapInferVersion = (
-  imports: Imports,
-  map: ImportMap,
-  options: GenerateImportMapOptions,
-): ImportMap => generateImportMap(imports, map, { ...options, versionHook: parseVersion });
+export const generateImportMapInferVersion = (imports: Imports, map: ImportMap, options: GenerateImportMapOptions): ImportMap =>
+  generateImportMap(imports, map, { ...options, versionHook: parseVersion });
