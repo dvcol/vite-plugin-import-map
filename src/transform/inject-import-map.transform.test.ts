@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as VersionUtils from '../utils/version.utils';
+
 import { injectImportMap, validateImportMap } from './inject-import-map.transform';
 
 import type { InjectImportMapOptions } from '../models/import-map.models';
@@ -27,10 +29,39 @@ describe('inject-import-map.transform.ts', () => {
       },
     };
 
+    const spyParseWorkspace = vi.spyOn(VersionUtils, 'parseWorkspaceVersion');
+
     it('should validates a valid import map and not throw errors', () => {
       expect.assertions(2);
       // Validate a valid import map
-      expect(() => validateImportMap(validImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform })).not.toThrow();
+      expect(() =>
+        validateImportMap(validImportMap, {
+          pkg: mockPackageJson,
+          strict: true,
+          transform: mockTransform,
+        }),
+      ).not.toThrow();
+      expect(mockTransform).toHaveBeenCalledOnce();
+    });
+
+    it('should validates a valid import map and not throw errors when resolving from workspace', () => {
+      expect.assertions(2);
+
+      spyParseWorkspace.mockReturnValue('1.0.0');
+
+      // Validate a valid import map
+      expect(() =>
+        validateImportMap(validImportMap, {
+          pkg: {
+            dependencies: {
+              ...mockPackageJson.dependencies,
+              dependency1: 'workspace:^',
+            },
+          },
+          strict: true,
+          transform: mockTransform,
+        }),
+      ).not.toThrow();
       expect(mockTransform).toHaveBeenCalledOnce();
     });
 
@@ -38,7 +69,12 @@ describe('inject-import-map.transform.ts', () => {
       expect.assertions(2);
 
       // Validate a valid import map
-      expect(() => validateImportMap(validImportMap, { strict: true, transform: mockTransform })).not.toThrow();
+      expect(() =>
+        validateImportMap(validImportMap, {
+          strict: true,
+          transform: mockTransform,
+        }),
+      ).not.toThrow();
       expect(mockTransform).toHaveBeenCalledOnce();
     });
 
@@ -53,7 +89,13 @@ describe('inject-import-map.transform.ts', () => {
       expect.assertions(2);
 
       // Validate a valid import map
-      expect(() => validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: false, transform: mockTransform })).not.toThrow();
+      expect(() =>
+        validateImportMap(invalidImportMap, {
+          pkg: mockPackageJson,
+          strict: false,
+          transform: mockTransform,
+        }),
+      ).not.toThrow();
       expect(mockTransform).toHaveBeenCalledOnce();
     });
 
@@ -61,13 +103,37 @@ describe('inject-import-map.transform.ts', () => {
       expect.assertions(1);
 
       // Validate an invalid import map in strict mode
-      expect(() => validateImportMap(invalidImportMap, { pkg: mockPackageJson, strict: true, transform: mockTransform })).toThrow(
-        "[import-map-plugin]: Local '1.0.0' and import map '1.1.0' versions do not match for package 'dependency1'.",
-      );
+      expect(() =>
+        validateImportMap(invalidImportMap, {
+          pkg: mockPackageJson,
+          strict: true,
+          transform: mockTransform,
+        }),
+      ).toThrow("[import-map-plugin]: Local '1.0.0' and import map '1.1.0' versions do not match for package 'dependency1'.");
+    });
+
+    it('should throw an error for an invalid import map in strict mode when resolved from workspace', () => {
+      expect.assertions(1);
+
+      spyParseWorkspace.mockReturnValue('9.9.9');
+
+      // Validate an invalid import map in strict mode
+      expect(() =>
+        validateImportMap(invalidImportMap, {
+          pkg: {
+            dependencies: {
+              ...mockPackageJson.dependencies,
+              dependency1: 'workspace:^',
+            },
+          },
+          strict: true,
+          transform: mockTransform,
+        }),
+      ).toThrow("[import-map-plugin]: Local '9.9.9' and import map '1.1.0' versions do not match for package 'dependency1'.");
     });
   });
 
-  describe('validateImportMap', () => {
+  describe('injectImportMap', () => {
     // Mocking other dependencies and utilities
     const mockHtml = '<html><head></head><body></body></html>';
     const mockImports = { dependency1: '^1.0.0' };

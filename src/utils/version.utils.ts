@@ -23,7 +23,10 @@ import type { VersionHook, VersionOptions } from '../models/import-map.models';
  * // Some package.json in the workspace with name example-package and version 1.1.0
  * // Result: '1.1.0'
  */
-const parseWorkspaceVersion = (name: string, { pkg, debug, cache }: { pkg?: PackageJson; debug?: boolean; cache?: boolean }): string | undefined => {
+export const parseWorkspaceVersion = (
+  name: string,
+  { pkg, debug, cache }: { pkg?: PackageJson; debug?: boolean; cache?: boolean },
+): string | undefined => {
   // resolve workspace version if repository.directory is set in package.json
   const workspace = getWorkspace({ cwd: geRootPath(pkg), debug, cache });
   const workspaceVersion = workspace[name]?.version;

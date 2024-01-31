@@ -2,12 +2,26 @@ import chalk from 'chalk';
 
 import { generateImportMapInferVersion, mergeMaps } from '../utils/generate-import-map.utils';
 import { extractMap, findFirstModuleScriptInHead, insertTextAtIndex, prettifyHtml } from '../utils/html.utils';
-import { extractAbsoluteVersion } from '../utils/regex.utils';
+import { extractAbsoluteVersion, workspaceRegex } from '../utils/regex.utils';
+import { parseWorkspaceVersion } from '../utils/version.utils';
 import { writeFileJson } from '../utils/write-json.utils';
 
 import type { PackageJson } from '../models/common.models';
 
-import type { HtmlTransformHook, ImportMap, ImportMapTransformHook, InjectImportMapOptions } from '../models/import-map.models';
+import type { HtmlTransformHook, ImportMap, ImportMapTransformHook, InjectImportMapOptions, VersionOptions } from '../models/import-map.models';
+
+/**
+ * Attempt to parse workspace version if found, or coerce version to exact 3 digit semver version.
+ * @param name - The name of the package
+ * @param version - The version to test
+ * @param pkg - The package json
+ * @param debug - To enable debug logs
+ * @param cache - To enable workspace caching (defaults to true)
+ */
+const resolveVersion = (name: string, { version, pkg, debug, cache }: VersionOptions) => {
+  if (version && workspaceRegex.test(version)) return parseWorkspaceVersion(name, { pkg, debug, cache });
+  return extractAbsoluteVersion(version);
+};
 
 /**
  * Validate generated import map against local dependencies. If a dependency is present in the package.json but differ from the import map version, an error is raised.
@@ -24,7 +38,7 @@ export const validateImportMap = (
   Object.entries(map.imports).forEach(([name, url]) => {
     let pkgVersion = pkg?.dependencies?.[name];
     if (!pkgVersion) return;
-    pkgVersion = extractAbsoluteVersion(pkgVersion);
+    pkgVersion = resolveVersion(name, { version: pkgVersion, pkg, debug });
     if (!pkgVersion) return;
     const importMapVersion = url.match(new RegExp(`${name}@(\\d+\\.\\d+\\.\\d+)`))?.at(1);
     if (importMapVersion && importMapVersion !== pkgVersion) {
