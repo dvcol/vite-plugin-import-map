@@ -1,11 +1,9 @@
 import { rollupPluginHTML } from '@web/rollup-plugin-html';
 
 import { injectImportMap } from '../transform/inject-import-map.transform';
-
 import { injectScriptTags } from '../transform/inject-scripts.transform';
 
 import type { ImportMapRollupPluginOptions } from '../models/common.models';
-
 import type { RollupPluginHtml, RollupPluginHTMLOptions } from '@web/rollup-plugin-html';
 import type { TransformHtmlFunction } from '@web/rollup-plugin-html/src/RollupPluginHTMLOptions';
 
@@ -23,6 +21,7 @@ import type { TransformHtmlFunction } from '@web/rollup-plugin-html/src/RollupPl
  * @param scripts {Array<ScriptOrLink> | undefined} - The scripts to be added to the html string.
  * @param transformScripts {{(scripts: Array<ScriptOrLink>) => (Array<ScriptOrLink>) | undefined} - A hook executed before writing the final scripts
  * @param domain {string | undefined} - The optional domain to prepend to import paths.
+ * @param scope {string | undefined} - The package's import scope
  * @param pkg {PackageJson | undefined}  - Package information, including dependencies.
  * @param debug {boolean | undefined} - To enable debug logs
  * @param strict {boolean | undefined} - To enable strict validation of dependencies
@@ -43,6 +42,7 @@ export function importMapRollupPlugin(
     scripts,
     transformScripts,
     domain,
+    scope,
     pkg,
     debug,
     strict,
@@ -63,6 +63,7 @@ export function importMapRollupPlugin(
         imports,
         map,
         domain: mapDomain,
+        scope,
         pkg,
         transformMap,
         debug,

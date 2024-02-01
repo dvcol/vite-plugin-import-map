@@ -4,7 +4,7 @@ import * as VersionUtils from '../utils/version.utils';
 
 import { injectImportMap, validateImportMap } from './inject-import-map.transform';
 
-import type { InjectImportMapOptions } from '../models/import-map.models';
+import type { ImportMap, InjectImportMapOptions } from '../models/import-map.models';
 
 describe('inject-import-map.transform.ts', () => {
   // Mocking PackageJson and ImportMapTransformHook
@@ -109,7 +109,7 @@ describe('inject-import-map.transform.ts', () => {
           strict: true,
           transform: mockTransform,
         }),
-      ).toThrow("[import-map-plugin]: Local '1.0.0' and import map '1.1.0' versions do not match for package 'dependency1'.");
+      ).toThrow("[import-map-plugin]: Local '1.0.0' and import map version(s) '1.1.0' do not match for package 'dependency1'.");
     });
 
     it('should throw an error for an invalid import map in strict mode when resolved from workspace', () => {
@@ -129,7 +129,91 @@ describe('inject-import-map.transform.ts', () => {
           strict: true,
           transform: mockTransform,
         }),
-      ).toThrow("[import-map-plugin]: Local '9.9.9' and import map '1.1.0' versions do not match for package 'dependency1'.");
+      ).toThrow("[import-map-plugin]: Local '9.9.9' and import map version(s) '1.1.0' do not match for package 'dependency1'.");
+    });
+
+    describe('scoped versions', () => {
+      const scopedMap: ImportMap = {
+        ...validImportMap,
+        scopes: {
+          '/scope1/': {
+            dependency1: '/path/to/dependency1@1.1.0/index.js',
+          },
+          '/scope1/scope2/': {
+            dependency1: '/path/to/dependency1@1.2.0/index.js',
+          },
+          '/scope1/scope2/scope3/': {
+            dependency1: '/path/to/dependency1@1.1.0/index.js',
+          },
+        },
+      };
+
+      it('should not throw an error for an invalid scope when no scope is provided', () => {
+        expect.assertions(2);
+
+        // Validate a valid import map
+        expect(() =>
+          validateImportMap(scopedMap, {
+            pkg: mockPackageJson,
+            strict: true,
+            transform: mockTransform,
+          }),
+        ).not.toThrow();
+        expect(mockTransform).toHaveBeenCalledOnce();
+      });
+
+      it('should not throw an error for an invalid map when scope is valid', () => {
+        expect.assertions(2);
+
+        // Validate a valid import map
+        expect(() =>
+          validateImportMap(
+            {
+              ...invalidImportMap,
+              scopes: {
+                '/scope1/': {
+                  dependency1: '/path/to/dependency1@1.0.0/index.js',
+                },
+              },
+            },
+            {
+              pkg: mockPackageJson,
+              strict: true,
+              scope: '/scope1/',
+              transform: mockTransform,
+            },
+          ),
+        ).not.toThrow();
+        expect(mockTransform).toHaveBeenCalledOnce();
+      });
+
+      it('should throw an error for an invalid import map when a scope overrides with an invalid version', () => {
+        expect.assertions(1);
+
+        // Validate an invalid import map in strict mode
+        expect(() =>
+          validateImportMap(scopedMap, {
+            pkg: mockPackageJson,
+            scope: '/scope2/',
+            strict: true,
+          }),
+        ).toThrow("[import-map-plugin]: Local '1.0.0' and import map version(s) '1.2.0, 1.1.0' do not match for package 'dependency1'.");
+      });
+
+      it('should throw an error for an invalid import map when a scope override version with scope defined in pkg', () => {
+        expect.assertions(1);
+
+        // Validate an invalid import map in strict mode
+        expect(() =>
+          validateImportMap(scopedMap, {
+            pkg: {
+              ...mockPackageJson,
+              runtimeDependencies: { scope: '/scope3/' },
+            },
+            strict: true,
+          }),
+        ).toThrow("[import-map-plugin]: Local '1.0.0' and import map version(s) '1.1.0' do not match for package 'dependency1'.");
+      });
     });
   });
 

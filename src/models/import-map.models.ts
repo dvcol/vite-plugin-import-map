@@ -32,6 +32,8 @@ export type InjectImportMapOptions = {
   map?: ImportMap;
   /** The optional domain to prepend to import paths. */
   domain?: string;
+  /** The optional scope of the package to validate against import-map */
+  scope?: string;
   /** Package information, including dependencies. */
   pkg?: PackageJson;
   /** A hook executed before writing the final map */

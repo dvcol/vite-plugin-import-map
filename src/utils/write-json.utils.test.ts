@@ -35,7 +35,7 @@ describe('writeFileJson.utils.ts', async () => {
     } finally {
       expect(mkdir).not.toHaveBeenCalled();
       expect(writeFile).toHaveBeenCalledOnce();
-      expect(writeFile).toHaveBeenCalledWith(filePath, JSON.stringify(testData), {});
+      expect(writeFile).toHaveBeenCalledWith(filePath, JSON.stringify(testData, undefined, 2), {});
     }
   });
 
@@ -51,7 +51,7 @@ describe('writeFileJson.utils.ts', async () => {
       expect(mkdir).toHaveBeenCalledOnce();
       expect(mkdir).toHaveBeenCalledWith(dirPath, { recursive: true });
       expect(writeFile).toHaveBeenCalledOnce();
-      expect(writeFile).toHaveBeenCalledWith(filePathWithDir, JSON.stringify(testData), {});
+      expect(writeFile).toHaveBeenCalledWith(filePathWithDir, JSON.stringify(testData, undefined, 2), {});
     }
   });
 });

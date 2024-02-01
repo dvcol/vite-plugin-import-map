@@ -32,7 +32,7 @@ export async function writeFileJson<T = Record<string, unknown>>(
   data: string | T,
   { debug, ...options }: WriteJsonOptions = {},
 ): Promise<void> {
-  const _data = typeof data === 'string' ? data : JSON.stringify(data);
+  const _data = typeof data === 'string' ? data : JSON.stringify(data, undefined, 2);
   if (path.includes('/')) {
     try {
       await mkdir(dirname(path), { recursive: true });

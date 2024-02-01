@@ -2,7 +2,6 @@ import { injectImportMap } from '../transform/inject-import-map.transform';
 import { injectScriptTags } from '../transform/inject-scripts.transform';
 
 import type { ImportMapVitePluginOptions } from '../models/common.models';
-
 import type { Plugin } from 'vite';
 
 /**
@@ -18,6 +17,7 @@ import type { Plugin } from 'vite';
  * @param scripts {Array<ScriptOrLink> | undefined} - The scripts to be added to the html string.
  * @param transformScripts {{(scripts: Array<ScriptOrLink>) => (Array<ScriptOrLink>) | undefined} - A hook executed before writing the final scripts
  * @param domain {string | {map:string scripts:string} | undefined} - The optional domain(s) to prepend to import paths.
+ * @param scope {string | undefined} - The package's import scope
  * @param pkg {PackageJson | undefined}  - Package information, including dependencies.
  * @param debug {boolean | undefined} - To enable debug logs
  * @param strict {boolean | undefined} - To enable strict validation of dependencies
@@ -29,7 +29,22 @@ import type { Plugin } from 'vite';
  * @return {Plugin} - A configured plugin instance.
  */
 export function importMapVitePlugin(
-  { id, imports, map, transformMap, scripts, transformScripts, domain, pkg, debug, strict, prettier, write, cache }: ImportMapVitePluginOptions,
+  {
+    id,
+    imports,
+    map,
+    transformMap,
+    scripts,
+    transformScripts,
+    domain,
+    scope,
+    pkg,
+    debug,
+    strict,
+    prettier,
+    write,
+    cache,
+  }: ImportMapVitePluginOptions,
   plugin: Partial<Plugin> = {},
 ): Plugin {
   const { map: mapDomain, scripts: scriptsDomain } = domain && typeof domain !== 'string' ? domain : { map: domain, scripts: domain };
@@ -46,6 +61,7 @@ export function importMapVitePlugin(
           map,
           transformMap,
           domain: mapDomain,
+          scope,
           pkg,
           debug,
           strict,
