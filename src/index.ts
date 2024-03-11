@@ -14,8 +14,6 @@ export * from './transform/inject-scripts.transform';
 export * from './plugins/rollup.plugin';
 export * from './plugins/vite.plugin';
 
-export * from './entry/import-map.entry';
-
 export type { rollupPluginHTML, RollupPluginHtml, RollupPluginHTMLOptions } from '@web/rollup-plugin-html';
 
 export type { Plugin } from 'vite';

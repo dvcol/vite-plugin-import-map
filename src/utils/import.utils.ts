@@ -7,10 +7,11 @@ import { sync as globbySync } from 'globby';
 
 import { Infer } from '../models/import-map.models';
 
-import type { PackageJson } from '../models/common.models';
-
-import type { Import, Imports, NamedImport } from '../models/import-map.models';
+import type { Import, Imports, PackageJson } from '../models/common.models';
+import type { NamedImport } from '../models/import-map.models';
 import type { GlobbyOptions } from 'globby';
+
+const urlRegex = /^(http(s?):)|(\.?\/\w+)/;
 
 /**
  * Convert a string or Import object into an Import
@@ -18,7 +19,12 @@ import type { GlobbyOptions } from 'globby';
  * @return {Import}
  */
 export const toImport = (stringOrImport: Imports[number]): Import => {
-  const _import: Import = typeof stringOrImport === 'string' ? { version: stringOrImport } : { ...stringOrImport };
+  let _import: Import;
+  if (typeof stringOrImport === 'string') {
+    _import = { [urlRegex.test(stringOrImport) ? 'src' : 'version']: stringOrImport };
+  } else {
+    _import = { ...stringOrImport };
+  }
   if (_import.version === Infer) delete _import.version;
   return _import;
 };
@@ -124,7 +130,6 @@ export const getWorkspace = ({
     workspace = files.reduce<Record<string, { name: string; version: string; path: string }>>((versions, path) => {
       const resolvedPath = resolve(cwd.toString(), path);
       const { name, version } = JSON.parse(readFileSync(resolvedPath, { encoding: 'utf-8' }));
-      versions[name] = { name, version, path: resolvedPath };
       versions[name] = { name, version, path: resolvedPath };
       return versions;
     }, {});

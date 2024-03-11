@@ -1,4 +1,5 @@
 import type { ImportMap } from '../models/import-map.models';
+export { generateImportMap } from '../utils/generate-import-map.utils';
 
 function createImportMapDomScript(
   map: ImportMap,

@@ -1,7 +1,26 @@
-import type { ImportMap, Imports, InjectImportMapOptions } from './import-map.models';
+import type { Infer, InjectImportMapOptions } from './import-map.models';
 import type { InjectScriptsOptions, ScriptOrLink } from './inject-script.models';
 
+export type Import = {
+  version?: string | typeof Infer;
+  /** Version separator to compute script url */
+  separator?: string | '@' | '/';
+  domain?: string;
+  base?: string;
+  index?: string;
+  src?: string;
+};
+export type Imports = Record<string, string | Import>;
+export type Scopes = Record<string, Record<string, string | Import>>;
+
+export type ImportMapTemplate = {
+  imports: Imports;
+  scopes?: Scopes;
+};
+
 export type PackageJson = Record<string, unknown> & {
+  name?: string;
+  version?: string;
   repository?: {
     type?: string;
     url?: string;
@@ -10,8 +29,9 @@ export type PackageJson = Record<string, unknown> & {
   dependencies?: Record<string, string>;
   runtimeDependencies?: {
     scope?: string;
-    map?: Partial<ImportMap>;
+    map?: Partial<ImportMapTemplate>;
     imports?: Imports;
+    scopes?: Scopes;
     scripts?: ScriptOrLink[];
   };
 };

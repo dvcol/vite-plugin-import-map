@@ -1,17 +1,7 @@
-import type { PackageJson } from './common.models';
+import type { Import, ImportMapTemplate, Imports, PackageJson } from './common.models';
 
 export const Infer = 'infer' as const;
 
-export type Import = {
-  version?: string | typeof Infer;
-  /** Version separator to compute script url */
-  separator?: string | '@' | '/';
-  domain?: string;
-  base?: string;
-  index?: string;
-  src?: string;
-};
-export type Imports = Record<string, string | Import>;
 export type ImportMap = { imports: Record<string, string>; scopes?: Record<string, Record<string, string>> };
 
 export type NamedImport = Import & {
@@ -29,7 +19,7 @@ export type InjectImportMapOptions = {
   /** The imports to be added to the map. */
   imports?: Imports;
   /** An original import map containing some seed mappings. */
-  map?: ImportMap;
+  map?: ImportMapTemplate;
   /** The optional domain to prepend to import paths. */
   domain?: string;
   /** The optional scope of the package to validate against import-map */
