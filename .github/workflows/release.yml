@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⛙ Checkout branch ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: main
@@ -77,7 +77,7 @@ jobs:
           echo "::set-output name=TAG_NAME::$tag_name"
 
       - name: 🚀 Push Release to github
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.inputs.tagName || steps.latest-tag.outputs.TAG_NAME || github.ref}}
           body_path: RELEASE.md
